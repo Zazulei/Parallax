@@ -52,6 +52,7 @@ describe("Scene", function() {
     });
 
     it("Calls layers compute in the cycle", function() {
+        
         var aLayer = {};
         aLayer.compute = function() {};
         var anotherLayer = {};
@@ -67,28 +68,67 @@ describe("Scene", function() {
 
         expect(aLayer.compute).toHaveBeenCalled();
         expect(anotherLayer.compute).toHaveBeenCalled();
+        
     });
-
     
     it("Listening canvas mouse", function() {
- 
+        
+        var canvasID = 'dimensions';
+        var canvas = document.getElementById(canvasID);
+        
+        spyOn(canvas, "addEventListener");
+        
+        var scene = new Scene(canvasID);
+        
+        expect(canvas.addEventListener).toHaveBeenCalled();
+        
     });
-
     
-    xit("Paint to canvas", function() {
- 
+    it("Check Calcule Proportion", function() {
+        
+        var canvasID = 'dimensions';
+        var canvas = document.getElementById(canvasID);
+        
+        var scene = new Scene(canvasID);
+        
+        var clickEvent = document.createEvent("MouseEvents");
+        clickEvent.initMouseEvent("mousemove", true, true, window, 0, 0, 0, 10, 15, false, false, false, false, 0, null);
+        
+        canvas.dispatchEvent( clickEvent );
+        
+
+        var calcule = scene.getMouseX( ) / scene.width( );
+    
+        expect( scene.calculeProportionX() ).toEqual( calcule );
+        
     });
 
+    it("checked mouse movement", function() {
+        
+        var canvasID = 'dimensions';
+        var scene = new Scene(canvasID);
+        var canvas = document.getElementById(canvasID);
+        
+        var clickEvent = document.createEvent("MouseEvents");
+        clickEvent.initMouseEvent("mousemove", true, true, window, 0, 0, 0, 10, 15, false, false, false, false, 0, null);
+        
+        canvas.dispatchEvent( clickEvent );
+        
+        expect(scene.getMouseX()).toEqual(10);
+        expect(scene.getMouseY()).toEqual(15);
+        
+    });
+    
     var instantiateOK = function() {
-            new Scene('dimensions');
-        };
+        new Scene('dimensions');
+    };
 
 
     var instantiateKO = function() {
-            new Scene('non_exixting_canvas');
-        };
+         new Scene('non_exixting_canvas');
+    };
 
     var instantiateNotCanvas = function() {
-            new Scene('notCanvas');
-        };
+        new Scene('notCanvas');
+    };
 });
