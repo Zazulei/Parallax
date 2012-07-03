@@ -2,7 +2,7 @@ function Scene(canvasID) {
     this.cycleDuration = 30;
   
     this.canvas = document.getElementById(canvasID);
-
+    
     this.checkExists(this.canvas);
     this.checkCanvas(this.canvas);
     
@@ -19,7 +19,7 @@ Scene.prototype.activateCaptureMouse = function() {
     this.canvas.addEventListener('mousemove',function( evt ){
         var x = evt.clientX;
         var y = evt.clientY;
-     
+         
         theObj.setCoordinates( x, y );
     }, false );
 }
@@ -58,39 +58,47 @@ Scene.prototype.checkCanvas = function(canvas) {
 }
 
 Scene.prototype.width = function() {
-  return this.canvas.width;
+    return this.canvas.width;
 }
 
 Scene.prototype.height = function() {
-  return this.canvas.height;
+    return this.canvas.height;
 }
 
 Scene.prototype.addLayer = function(layer) {
-  this.layerStack.push( layer );
+    layer.calculeOffSet( this.width( ) );
+    this.layerStack.push( layer );
 }
 
 Scene.prototype.getLayer = function(ordinal) {
-  var index = ordinal - 1;
-  return this.layerStack[ index ];
+    var index = ordinal - 1;
+    return this.layerStack[ index ];
 }
 
 Scene.prototype.layers = function() {
-  return this.layerStack.length;
+    return this.layerStack.length;
 }
 
 Scene.prototype.play = function() {
-  setInterval( this.cycle, this.cycleDuration );
+    var self = this;
+    setInterval( function( ) { self.cycle( ) } , this.cycleDuration );
 }
 
-Scene.prototype.calculeProportionX = function() { 
+Scene.prototype.calculeProportionX = function() {
     return ( this.mouseX / this.width( ) );
 }
 
-Scene.prototype.cycle = function() {  
-  var size = this.layers( );
-  for( var i = 1; i <= size; i++ ) {
-    var theLayer = this.getLayer( i );
-    theLayer.compute( );
-  }
-  
+Scene.prototype.cycle = function() {
+    this.clearCanvas( );
+    var ctx = this.canvas.getContext('2d');
+    var size = this.layers( );
+    for( var i = 1; i <= size; i++ ) {
+        var theLayer = this.getLayer( i );
+        theLayer.compute( this.calculeProportionX( ) );
+        theLayer.paint( ctx );
+    }
+}
+
+Scene.prototype.clearCanvas = function( ) {
+    this.canvas.width = this.canvas.width;
 }

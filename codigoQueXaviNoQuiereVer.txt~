@@ -1,0 +1,10 @@
+Scene.prototype.activateCaptureMouse = function() {
+    var theObj = this;
+    
+    this.canvas.addEventListener('mousemove',function( evt ){
+        var x = evt.clientX;// - theObj.canvas.offsetLeft;
+        var y = evt.clientY;// - theObj.canvas.offsetTop;
+    
+        theObj.setCoordinates( x, y );
+    }, false );
+}

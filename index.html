@@ -15,15 +15,18 @@
   <link rel="stylesheet" href="css/style.css">
   
 </head>
-<body>
+<body onload='javascrip:init();'>
   <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
 
   <h1>Parallax</h1>
   
-  <canvas id="canvas" width="80" height="70" >
+  <canvas id="canvas" width="450" height="383" style="border:1px solid #000" >
     <p>Your browser doesn't support canvas.</p>
   </canvas>
 
-
+    <!-- include source files here... -->
+  <script type="text/javascript" src="src/Scene.js"></script>
+  <script type="text/javascript" src="src/Layer.js"></script>
+  <script type="text/javascript" src="src/main.js"></script>
 </body>
 </html>

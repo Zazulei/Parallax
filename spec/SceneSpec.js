@@ -31,7 +31,11 @@ describe("Scene", function() {
     it("has a method for adding layers", function() {
 
         var aLayer = {};
+        aLayer.calculeOffSet = function() {};
+        
         var anotherLayer = {};
+        anotherLayer.calculeOffSet = function() {};
+        
         var scene = new Scene('dimensions');
         scene.addLayer(anotherLayer);
         scene.addLayer(aLayer);
@@ -40,6 +44,24 @@ describe("Scene", function() {
         expect(scene.getLayer(1)).toBe(anotherLayer);
         expect(scene.getLayer(2)).toBe(aLayer);
 
+    });
+    
+    it("check adding layer called calculeOffSet", function() {
+
+        var aLayer = {};
+        aLayer.calculeOffSet = function() {};
+        
+        var anotherLayer = {};
+        
+        spyOn(aLayer, "calculeOffSet");
+        anotherLayer.calculeOffSet = jasmine.createSpy();
+        
+        var scene = new Scene('dimensions');
+        scene.addLayer(anotherLayer);
+        scene.addLayer(aLayer);
+    
+        expect(aLayer.calculeOffSet).toHaveBeenCalled();
+        expect(anotherLayer.calculeOffSet).toHaveBeenCalled();
     });
 
     it("initialize the loop when play is called", function() {
@@ -55,10 +77,15 @@ describe("Scene", function() {
         
         var aLayer = {};
         aLayer.compute = function() {};
+        aLayer.paint = function() {};
+        aLayer.calculeOffSet = function() {};
+        
         var anotherLayer = {};
 
         spyOn(aLayer, "compute");
         anotherLayer.compute = jasmine.createSpy();
+        anotherLayer.paint = jasmine.createSpy();
+        anotherLayer.calculeOffSet = jasmine.createSpy();
 
         var scene = new Scene('dimensions');
         scene.addLayer(anotherLayer);
@@ -70,6 +97,31 @@ describe("Scene", function() {
         expect(anotherLayer.compute).toHaveBeenCalled();
         
     });
+    
+    it("Calls layers Paint in the cycle", function() {
+        
+        var aLayer = {};
+        aLayer.compute = function() {};
+        aLayer.paint = function() {};
+        aLayer.calculeOffSet = function() {};
+        var anotherLayer = {};
+
+        spyOn(aLayer, "paint");
+        anotherLayer.compute = jasmine.createSpy();
+        anotherLayer.paint = jasmine.createSpy();
+        anotherLayer.calculeOffSet = jasmine.createSpy();
+
+        var scene = new Scene('dimensions');
+        scene.addLayer(anotherLayer);
+        scene.addLayer(aLayer);
+
+        scene.cycle();
+
+        expect(aLayer.paint).toHaveBeenCalled();
+        expect(anotherLayer.paint).toHaveBeenCalled();
+        
+    });
+
     
     it("Listening canvas mouse", function() {
         

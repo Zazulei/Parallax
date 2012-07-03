@@ -1,3 +1,5 @@
+SCENE
+
 Scene.prototype.activateCaptureMouse = function() {
     var theObj = this;
     
@@ -8,3 +10,7 @@ Scene.prototype.activateCaptureMouse = function() {
         theObj.setCoordinates( x, y );
     }, false );
 }
+
+LAYER
+
+Controlar la excpecion de la imagen sin src.
