@@ -1,6 +1,6 @@
 function Layer( ) {
-    this.width;
-    this.offSet;
+    this.offSetY = 0;
+    this.offSreen;
     this.img = new Image( );
     this.x;
 }
@@ -13,25 +13,25 @@ Layer.prototype.setWidth = function( value ) {
     this.img.width = value;
 }
 
-Layer.prototype.calculeOffSet = function( value ) {
-    this.offSet =  this.img.width - value;    
+Layer.prototype.calculeOffSreen = function( value ) {
+    this.offSreen =  this.img.width - value;
 }
 
-Layer.prototype.getOffSet = function( ) {
-    return this.offSet;
+Layer.prototype.getOffSreen = function( ) {
+    return this.offSreen;
 }
 
 Layer.prototype.compute = function( proportion ) {
-    this.x = proportion * this.offSet;
+    this.x = proportion * this.offSreen;
 }
 
-Layer.prototype.getX = function( ) {
-    return this.x;
+Layer.prototype.setOffSetY = function( value ) {
+    this.offSetY = value;
 }
 
 Layer.prototype.paint = function ( ctx ) {
     var x = - this.x;
-    var y = 0;
+    var y = this.offSetY;
            
     ctx.drawImage( this.img, x, y );
     ctx.drawImage( this.img, x, y );

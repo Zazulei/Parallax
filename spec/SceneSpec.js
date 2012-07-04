@@ -22,19 +22,11 @@ describe("Scene", function() {
         expect(scene.height()).toEqual(defaultCanvasHeight);
         expect(scene.width()).toEqual(defaultCanvasWidth);
 
-        scene = new Scene('dimensions');
-        expect(scene.height()).toEqual(120);
-        expect(scene.width()).toEqual(100);
-
-    });
-
-    it("has a method for adding layers", function() {
-
         var aLayer = {};
-        aLayer.calculeOffSet = function() {};
+        aLayer.calculeOffSreen = function() {};
         
         var anotherLayer = {};
-        anotherLayer.calculeOffSet = function() {};
+        anotherLayer.calculeOffSreen = function() {};
         
         var scene = new Scene('dimensions');
         scene.addLayer(anotherLayer);
@@ -46,30 +38,39 @@ describe("Scene", function() {
 
     });
     
-    it("check adding layer called calculeOffSet", function() {
+    it("check adding layer called calculeOffSreen", function() {
 
         var aLayer = {};
-        aLayer.calculeOffSet = function() {};
+        aLayer.calculeOffSreen = function() {};
         
         var anotherLayer = {};
         
-        spyOn(aLayer, "calculeOffSet");
-        anotherLayer.calculeOffSet = jasmine.createSpy();
+        spyOn(aLayer, "calculeOffSreen");
+        anotherLayer.calculeOffSreen = jasmine.createSpy();
         
         var scene = new Scene('dimensions');
         scene.addLayer(anotherLayer);
         scene.addLayer(aLayer);
     
-        expect(aLayer.calculeOffSet).toHaveBeenCalled();
-        expect(anotherLayer.calculeOffSet).toHaveBeenCalled();
+        expect(aLayer.calculeOffSreen).toHaveBeenCalled();
+        expect(anotherLayer.calculeOffSreen).toHaveBeenCalled();
     });
 
     it("initialize the loop when play is called", function() {
         spyOn(window, "setInterval");
         var scene = new Scene('dimensions');
+        
+        spyOn(scene, "cycle");
+        
         scene.play();
         var defaultCicleDuration = 30;
-        expect(window.setInterval).toHaveBeenCalledWith(scene.cycle, defaultCicleDuration);
+       
+        window.setInterval.mostRecentCall.args[0].call();
+        
+        expect(window.setInterval).toHaveBeenCalled();
+        
+        expect(scene.cycle).toHaveBeenCalled();
+        expect( window.setInterval.mostRecentCall.args[1] ).toEqual( defaultCicleDuration );
 
     });
 
@@ -78,14 +79,14 @@ describe("Scene", function() {
         var aLayer = {};
         aLayer.compute = function() {};
         aLayer.paint = function() {};
-        aLayer.calculeOffSet = function() {};
+        aLayer.calculeOffSreen = function() {};
         
         var anotherLayer = {};
 
         spyOn(aLayer, "compute");
         anotherLayer.compute = jasmine.createSpy();
         anotherLayer.paint = jasmine.createSpy();
-        anotherLayer.calculeOffSet = jasmine.createSpy();
+        anotherLayer.calculeOffSreen = jasmine.createSpy();
 
         var scene = new Scene('dimensions');
         scene.addLayer(anotherLayer);
@@ -103,13 +104,13 @@ describe("Scene", function() {
         var aLayer = {};
         aLayer.compute = function() {};
         aLayer.paint = function() {};
-        aLayer.calculeOffSet = function() {};
+        aLayer.calculeOffSreen = function() {};
         var anotherLayer = {};
 
         spyOn(aLayer, "paint");
         anotherLayer.compute = jasmine.createSpy();
         anotherLayer.paint = jasmine.createSpy();
-        anotherLayer.calculeOffSet = jasmine.createSpy();
+        anotherLayer.calculeOffSreen = jasmine.createSpy();
 
         var scene = new Scene('dimensions');
         scene.addLayer(anotherLayer);

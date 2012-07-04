@@ -7,8 +7,20 @@ describe("Layer", function() {
     it("Create layer", function() {
         var layer = new Layer( );
         layer.setWidth( 100 );
-        layer.calculeOffSet( 50 );
-        expect( layer.getOffSet( ) ).toEqual( 50 );
+        layer.calculeOffSreen( 50 );
+        expect( layer.getOffSreen( ) ).toEqual( 50 );
+    });
+    
+    it("Check Off Set Y", function() {
+        var alayer = new Layer( );
+        
+        var offSetYDefault = 0;
+        expect( alayer.offSetY ).toEqual( offSetYDefault );
+        
+        var anotherLayer = new Layer( );
+        
+        anotherLayer.setOffSetY( 25 );
+        expect( anotherLayer.offSetY ).toEqual( 25 );
     });
     
     it("Check paint to layer", function() {
@@ -26,16 +38,16 @@ describe("Layer", function() {
     it("Check is move OK", function() {
         var layer = new Layer( );
         layer.setWidth( 600 );
-        layer.calculeOffSet( 400 );
+        layer.calculeOffSreen( 400 );
         
         layer.compute( 0.5 );
-        expect( layer.getX( ) ).toEqual( 100 );
+        expect( layer.x ).toEqual( 100 );
         
         layer.compute( 0.9 );
-        expect( layer.getX( ) ).toEqual( 180 );
+        expect( layer.x ).toEqual( 180 );
         
         layer.compute( 0.1 );
-        expect( layer.getX( ) ).toEqual( 20 );
+        expect( layer.x ).toEqual( 20 );
     })
 
 });

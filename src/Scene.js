@@ -66,7 +66,7 @@ Scene.prototype.height = function() {
 }
 
 Scene.prototype.addLayer = function(layer) {
-    layer.calculeOffSet( this.width( ) );
+    layer.calculeOffSreen( this.width( ) );
     this.layerStack.push( layer );
 }
 
