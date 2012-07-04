@@ -1,9 +1,12 @@
 function init( ) {
-    var layer = new Layer( );
-    layer.setPathImg( 'img/rio.jpg' );
-    //layer.setPathImg( 'img/prb.png' );
+    var rio = new Layer( );
+    rio.setPathImg( 'img/rio.jpg' );
+    
+    var nube = new Layer( );
+    nube.setPathImg( 'img/prb.png' );
     
     var scene = new Scene( 'canvas' );
-    scene.addLayer( layer );
+    scene.addLayer( rio );
+    scene.addLayer( nube );
     scene.play( );
 }
