@@ -34,5 +34,4 @@ Layer.prototype.paint = function ( ctx ) {
     var y = this.offSetY;
            
     ctx.drawImage( this.img, x, y );
-    ctx.drawImage( this.img, x, y );
 }

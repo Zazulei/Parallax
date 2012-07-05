@@ -7,6 +7,7 @@ function Scene(canvasID) {
     this.checkCanvas(this.canvas);
     
     this.layerStack = new Array( );
+    this.objectStack = new Array( );
     
     this.mouseX;
     this.mouseY;
@@ -65,6 +66,14 @@ Scene.prototype.height = function() {
     return this.canvas.height;
 }
 
+Scene.prototype.setWidth = function( value ) {
+    this.canvas.width = value;
+}
+
+Scene.prototype.setHeight = function( value ) {
+    this.canvas.height = value;
+}
+
 Scene.prototype.addLayer = function(layer) {
     layer.calculeOffSreen( this.width( ) );
     this.layerStack.push( layer );
@@ -77,6 +86,19 @@ Scene.prototype.getLayer = function(ordinal) {
 
 Scene.prototype.layers = function() {
     return this.layerStack.length;
+}
+
+Scene.prototype.addObject = function(object) {
+    this.objectStack.push( object );
+}
+
+Scene.prototype.getObject = function(ordinal) {
+    var index = ordinal - 1;
+    return this.objectStack[ index ];
+}
+
+Scene.prototype.objects = function() {
+    return this.objectStack.length;
 }
 
 Scene.prototype.play = function() {
@@ -96,6 +118,12 @@ Scene.prototype.cycle = function() {
         var theLayer = this.getLayer( i );
         theLayer.compute( this.calculeProportionX( ) );
         theLayer.paint( ctx );
+    }
+    
+    size = this.objects( );
+    for( var i = 1; i <= size; i++ ) {
+        var theObject = this.getObject( i );
+        theObject.paint( ctx );
     }
 }
 

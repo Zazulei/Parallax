@@ -4,7 +4,6 @@ describe("Scene", function() {
 
     });
 
-
     it("uses a canvas id for instantiation", function() {
 
         expect(instantiateOK).not.toThrow();
@@ -13,7 +12,6 @@ describe("Scene", function() {
 
     });
 
-
     it("takes dimensions from canvas", function() {
 
         var defaultCanvasHeight = 150;
@@ -21,7 +19,23 @@ describe("Scene", function() {
         var scene = new Scene('nodimensions');
         expect(scene.height()).toEqual(defaultCanvasHeight);
         expect(scene.width()).toEqual(defaultCanvasWidth);
+    });
 
+    it("check cange size canvas", function() {
+
+        var canvasHeight = 350;
+        var canvasWidth = 400;
+        var scene = new Scene('nodimensions');
+        
+        scene.setHeight( canvasHeight );
+        scene.setWidth( canvasWidth );
+        
+        expect(scene.height()).toEqual(canvasHeight);
+        expect(scene.width()).toEqual(canvasWidth);
+    });
+    
+    it("check adding layer", function() {
+    
         var aLayer = {};
         aLayer.calculeOffSreen = function() {};
         
@@ -35,7 +49,7 @@ describe("Scene", function() {
         expect(scene.layers()).toEqual(2);
         expect(scene.getLayer(1)).toBe(anotherLayer);
         expect(scene.getLayer(2)).toBe(aLayer);
-
+    
     });
     
     it("check adding layer called calculeOffSreen", function() {
@@ -57,6 +71,7 @@ describe("Scene", function() {
     });
 
     it("initialize the loop when play is called", function() {
+        
         spyOn(window, "setInterval");
         var scene = new Scene('dimensions');
         
@@ -171,11 +186,47 @@ describe("Scene", function() {
         expect(scene.getMouseY()).toEqual(15);
         
     });
+
+    it("check adding Object", function() {
+    
+        var aObject = {};
+        var anotherObject = {};
+        
+        var scene = new Scene('dimensions');
+        scene.addObject(aObject);
+        scene.addObject(anotherObject);
+
+        expect(scene.objects()).toEqual(2);
+        expect(scene.getObject(1)).toBe(aObject);
+        expect(scene.getObject(2)).toBe(anotherObject);
+    
+    });
+    
+    it("Calls Object Paint in the cycle", function() {
+        
+        var aObject = {};
+        aObject.paint = function() {};
+        
+        var anotherObject = {};
+        anotherObject.paint = function() {};
+        
+        spyOn(aObject, "paint");
+        spyOn(anotherObject, "paint");
+        
+        var scene = new Scene('dimensions');
+        scene.addObject(aObject);
+        scene.addObject(anotherObject);
+
+        scene.cycle();
+
+        expect(aObject.paint).toHaveBeenCalled();
+        expect(anotherObject.paint).toHaveBeenCalled();
+        
+    });
     
     var instantiateOK = function() {
         new Scene('dimensions');
     };
-
 
     var instantiateKO = function() {
          new Scene('non_exixting_canvas');
@@ -184,4 +235,5 @@ describe("Scene", function() {
     var instantiateNotCanvas = function() {
         new Scene('notCanvas');
     };
+    
 });
