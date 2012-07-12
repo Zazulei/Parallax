@@ -1,7 +1,6 @@
 function Scene(canvasID) {
-    this.cycleDuration = 30;
-  
     this.canvas = document.getElementById(canvasID);
+    this.color;
     
     this.checkExists(this.canvas);
     this.checkCanvas(this.canvas);
@@ -9,9 +8,14 @@ function Scene(canvasID) {
     this.layerStack = new Array( );
     this.objectStack = new Array( );
     
+    this.indexBall;
+    
     this.mouseX;
     this.mouseY;
     this.activateCaptureMouse();
+    
+    this.cycleDuration = 30;
+    this.setColor( 'black' );
 }
 
 Scene.prototype.activateCaptureMouse = function() {
@@ -23,6 +27,10 @@ Scene.prototype.activateCaptureMouse = function() {
          
         theObj.setCoordinates( x, y );
     }, false );
+}
+
+Scene.prototype.setColor = function( value ) {
+    this.color = value;
 }
 
 Scene.prototype.setMouseX = function(value) {
@@ -89,6 +97,8 @@ Scene.prototype.layers = function() {
 }
 
 Scene.prototype.addObject = function(object) {
+    object.setCanvasWidth( this.width( ) );
+    object.setCanvasHeight( this.height( ) );
     this.objectStack.push( object );
 }
 
@@ -101,18 +111,36 @@ Scene.prototype.objects = function() {
     return this.objectStack.length;
 }
 
+Scene.prototype.addBall = function(ball) {
+    this.addObject( ball );
+    this.indexBall = this.objects( );
+}
+
+Scene.prototype.getIndexBall = function( ) {
+    return this.indexBall;
+}
+
+Scene.prototype.getBall = function( ) {
+    var index = this.getIndexBall( );
+    return this.getObject( index );
+}
+
 Scene.prototype.play = function() {
     var self = this;
     setInterval( function( ) { self.cycle( ) } , this.cycleDuration );
 }
 
 Scene.prototype.calculeProportionX = function() {
-    return ( this.mouseX / this.width( ) );
+    var ball = this.getBall( );
+    return ( ball.x / this.width( ) );
 }
 
 Scene.prototype.cycle = function() {
     this.clearCanvas( );
     var ctx = this.canvas.getContext('2d');
+    
+    this.paint( ctx );
+    
     var size = this.layers( );
     for( var i = 1; i <= size; i++ ) {
         var theLayer = this.getLayer( i );
@@ -125,6 +153,11 @@ Scene.prototype.cycle = function() {
         var theObject = this.getObject( i );
         theObject.paint( ctx );
     }
+}
+
+Scene.prototype.paint = function( ctx ) {
+    ctx.fillStyle = this.color;
+    ctx.fillRect( 0, 0, this.width(), this.height() );
 }
 
 Scene.prototype.clearCanvas = function( ) {

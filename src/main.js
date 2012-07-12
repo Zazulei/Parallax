@@ -1,8 +1,12 @@
 function init( ) {
     
+    var ball = new Ball();
+    ball.setCoordinates( 100, 100 );
+    ball.setSpeed( 5 );
+
+    ball.play();
+    
     var player1 = new Pad( );
-    player1.setPathImg( 'img/pad.jpg' );
-    player1.setCoordinates( 10, 10 );
     player1.setSpeed( 5 );
     
     player1.play( );
@@ -22,12 +26,14 @@ function init( ) {
     nube.setOffSetY( 10 );
     
     var scene = new Scene( 'canvas' );
+    scene.setColor( 'red' );
     
     scene.addLayer( rio );
     scene.addLayer( nube );
     
     scene.addObject( player1 );
     scene.addObject( player2 );
+    scene.addBall( ball );
     
     scene.play( );
 }

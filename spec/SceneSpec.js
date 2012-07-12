@@ -3,7 +3,7 @@ describe("Scene", function() {
     beforeEach(function() {
 
     });
-
+    
     it("uses a canvas id for instantiation", function() {
 
         expect(instantiateOK).not.toThrow();
@@ -91,6 +91,11 @@ describe("Scene", function() {
 
     it("Calls layers compute in the cycle", function() {
         
+        var aBall = {};
+        aBall.paint = function() {};
+        aBall.setCanvasWidth = function() {};
+        aBall.setCanvasHeight = function() {};
+        
         var aLayer = {};
         aLayer.compute = function() {};
         aLayer.paint = function() {};
@@ -106,6 +111,8 @@ describe("Scene", function() {
         var scene = new Scene('dimensions');
         scene.addLayer(anotherLayer);
         scene.addLayer(aLayer);
+        
+        scene.addBall( aBall );
 
         scene.cycle();
 
@@ -115,6 +122,11 @@ describe("Scene", function() {
     });
     
     it("Calls layers Paint in the cycle", function() {
+        
+        var aBall = {};
+        aBall.paint = function() {};
+        aBall.setCanvasWidth = function() {};
+        aBall.setCanvasHeight = function() {};
         
         var aLayer = {};
         aLayer.compute = function() {};
@@ -130,6 +142,8 @@ describe("Scene", function() {
         var scene = new Scene('dimensions');
         scene.addLayer(anotherLayer);
         scene.addLayer(aLayer);
+        
+        scene.addBall( aBall );
 
         scene.cycle();
 
@@ -159,13 +173,15 @@ describe("Scene", function() {
         
         var scene = new Scene(canvasID);
         
-        var clickEvent = document.createEvent("MouseEvents");
-        clickEvent.initMouseEvent("mousemove", true, true, window, 0, 0, 0, 10, 15, false, false, false, false, 0, null);
+        var aBall = {};
+        aBall.paint = function() {};
+        aBall.setCanvasWidth = function() {};
+        aBall.setCanvasHeight = function() {};
+        aBall.x = 10;
         
-        canvas.dispatchEvent( clickEvent );
-        
+        scene.addBall( aBall );        
 
-        var calcule = scene.getMouseX( ) / scene.width( );
+        var calcule = aBall.x / scene.width( );
     
         expect( scene.calculeProportionX() ).toEqual( calcule );
         
@@ -189,16 +205,31 @@ describe("Scene", function() {
 
     it("check adding Object", function() {
     
-        var aObject = {};
+        var aObject = {}; 
+        aObject.setCanvasWidth = function() {};
+        aObject.setCanvasHeight = function() {};
+        
         var anotherObject = {};
+        anotherObject.setCanvasWidth = function() {};
+        anotherObject.setCanvasHeight = function() {};
+        
+        spyOn(aObject, "setCanvasWidth");
+        spyOn(aObject, "setCanvasHeight");
+        spyOn(anotherObject, "setCanvasWidth");
+        spyOn(anotherObject, "setCanvasHeight");
         
         var scene = new Scene('dimensions');
         scene.addObject(aObject);
         scene.addObject(anotherObject);
-
+        
         expect(scene.objects()).toEqual(2);
         expect(scene.getObject(1)).toBe(aObject);
         expect(scene.getObject(2)).toBe(anotherObject);
+      
+        expect(aObject.setCanvasWidth).toHaveBeenCalled();
+        expect(aObject.setCanvasHeight).toHaveBeenCalled();
+        expect(anotherObject.setCanvasWidth).toHaveBeenCalled();
+        expect(anotherObject.setCanvasHeight).toHaveBeenCalled();
     
     });
     
@@ -206,9 +237,13 @@ describe("Scene", function() {
         
         var aObject = {};
         aObject.paint = function() {};
+        aObject.setCanvasWidth = function() {};
+        aObject.setCanvasHeight = function() {};
         
         var anotherObject = {};
         anotherObject.paint = function() {};
+        anotherObject.setCanvasWidth = function() {};
+        anotherObject.setCanvasHeight = function() {};
         
         spyOn(aObject, "paint");
         spyOn(anotherObject, "paint");
@@ -221,6 +256,35 @@ describe("Scene", function() {
 
         expect(aObject.paint).toHaveBeenCalled();
         expect(anotherObject.paint).toHaveBeenCalled();
+        
+    });
+    
+    it("Values for default", function() {
+        var scene = new Scene('dimensions');
+        
+        expect(scene.cycleDuration).toEqual(30);
+        expect(scene.color).toEqual('black');
+        
+    });
+    
+    it("check adding Ball", function() {
+        
+        var aBall = {};
+        aBall.setCanvasWidth = function() {};
+        aBall.setCanvasHeight = function() {};
+        
+        spyOn(aBall, "setCanvasWidth");
+        spyOn(aBall, "setCanvasHeight");
+        
+        
+        var scene = new Scene('dimensions');
+        scene.addBall( aBall );
+        
+        var index = scene.getIndexBall( );
+    
+        expect(aBall.setCanvasWidth).toHaveBeenCalled();
+        expect(aBall.setCanvasHeight).toHaveBeenCalled();
+        expect( scene.getObject( index ) ).toBe( aBall );
         
     });
     

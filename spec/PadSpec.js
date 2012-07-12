@@ -3,6 +3,20 @@ describe("Pad", function() {
     beforeEach(function() {
 
     });
+    
+    it("Values for default", function( ) {
+        
+        var pad = new Pad();
+                      
+        expect( pad.getWidth( ) ).toEqual( 25 );
+        expect( pad.getHeight( ) ).toEqual( 100 );
+        expect( pad.x ).toEqual( 10 );
+        expect( pad.y ).toEqual( 10 );
+        expect( pad.cycleDuration ).toEqual( 30 );
+        expect( pad.speed ).toEqual( 5 );
+        expect( pad.color ).toEqual( 'green' );
+        
+    });
 
     it("Width and Height Get and Set is OK", function() {
         
@@ -113,7 +127,7 @@ describe("Pad", function() {
     it("initialize the loop when play is called", function() {
         
         spyOn(window, "setInterval");
-        var pad = new Pad('dimensions');
+        var pad = new Pad( );
         
         spyOn(pad, "cycle");
         
@@ -130,10 +144,14 @@ describe("Pad", function() {
     });
     
     
-    it("Move limited in canvas", function() {
-    
-    }
-    
-    
+    it("Limited in canvas", function() {
+        
+        var pad = new Pad( );
+        pad.setCanvasHeight( 300 );
+
+        expect( pad.limiterMin( -100 ) ).toEqual( 0 );
+        expect( pad.limiterMax( 1000 ) ).toEqual( 200 );
+        
+    });
          
 });
