@@ -75,7 +75,7 @@ describe("Scene", function() {
         spyOn(window, "setInterval");
         var scene = new Scene('dimensions');
         
-        spyOn(scene, "cycle");
+        spyOn(scene, "_cycle");
         
         scene.play();
         var defaultCicleDuration = 30;
@@ -84,7 +84,7 @@ describe("Scene", function() {
         
         expect(window.setInterval).toHaveBeenCalled();
         
-        expect(scene.cycle).toHaveBeenCalled();
+        expect(scene._cycle).toHaveBeenCalled();
         expect( window.setInterval.mostRecentCall.args[1] ).toEqual( defaultCicleDuration );
 
     });
@@ -114,7 +114,7 @@ describe("Scene", function() {
         
         scene.addBall( aBall );
 
-        scene.cycle();
+        scene._cycle();
 
         expect(aLayer.compute).toHaveBeenCalled();
         expect(anotherLayer.compute).toHaveBeenCalled();
@@ -145,24 +145,10 @@ describe("Scene", function() {
         
         scene.addBall( aBall );
 
-        scene.cycle();
+        scene._cycle();
 
         expect(aLayer.paint).toHaveBeenCalled();
         expect(anotherLayer.paint).toHaveBeenCalled();
-        
-    });
-
-    
-    it("Listening canvas mouse", function() {
-        
-        var canvasID = 'dimensions';
-        var canvas = document.getElementById(canvasID);
-        
-        spyOn(canvas, "addEventListener");
-        
-        var scene = new Scene(canvasID);
-        
-        expect(canvas.addEventListener).toHaveBeenCalled();
         
     });
     
@@ -183,23 +169,7 @@ describe("Scene", function() {
 
         var calcule = aBall.x / scene.width( );
     
-        expect( scene.calculeProportionX() ).toEqual( calcule );
-        
-    });
-
-    it("checked mouse movement", function() {
-        
-        var canvasID = 'dimensions';
-        var scene = new Scene(canvasID);
-        var canvas = document.getElementById(canvasID);
-        
-        var clickEvent = document.createEvent("MouseEvents");
-        clickEvent.initMouseEvent("mousemove", true, true, window, 0, 0, 0, 10, 15, false, false, false, false, 0, null);
-        
-        canvas.dispatchEvent( clickEvent );
-        
-        expect(scene.getMouseX()).toEqual(10);
-        expect(scene.getMouseY()).toEqual(15);
+        expect( scene._calculeProportionX() ).toEqual( calcule );
         
     });
 
@@ -252,7 +222,7 @@ describe("Scene", function() {
         scene.addObject(aObject);
         scene.addObject(anotherObject);
 
-        scene.cycle();
+        scene._cycle();
 
         expect(aObject.paint).toHaveBeenCalled();
         expect(anotherObject.paint).toHaveBeenCalled();
@@ -262,8 +232,8 @@ describe("Scene", function() {
     it("Values for default", function() {
         var scene = new Scene('dimensions');
         
-        expect(scene.cycleDuration).toEqual(30);
-        expect(scene.color).toEqual('black');
+        expect(scene._cycleDuration).toEqual(30);
+        expect(scene._color).toEqual('black');
         
     });
     
