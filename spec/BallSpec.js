@@ -15,37 +15,37 @@ describe("Ball", function() {
         
         aBall.setDirection( 0 );
         aBall.setCoordinates( 10, -10 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 180 );
         
         aBall.setDirection( 30 );
         aBall.setCoordinates( 10, -10 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 150 );
         
         aBall.setDirection( 45 );
         aBall.setCoordinates( 10, -10 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 135 );
         
         aBall.setDirection( 80 );
         aBall.setCoordinates( 10, -10 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 100 );
         
         aBall.setDirection( 330 );
         aBall.setCoordinates( 10, -10 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 210 );
         
         aBall.setDirection( 315 );
         aBall.setCoordinates( 10, -10 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 225 );
         
         aBall.setDirection( 300 );
         aBall.setCoordinates( 10, -10 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 240 );
     });
     
@@ -56,22 +56,22 @@ describe("Ball", function() {
         
         aBall.setDirection( 180 );
         aBall.setCoordinates( 10, 1000 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 0 );
         
         aBall.setDirection( 150 );
         aBall.setCoordinates( 10, 1000 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 30 );
         
         aBall.setDirection( 225 );
         aBall.setCoordinates( 10, 1000 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 315 );
         
         aBall.setDirection( 240 );
         aBall.setCoordinates( 10, 1000 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 300 );
         
     });    
@@ -82,17 +82,17 @@ describe("Ball", function() {
         
         aBall.setDirection( 90 );
         aBall.setCoordinates( -10, 10 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 270 );
         
         aBall.setDirection( 135 );
         aBall.setCoordinates( -10, 10 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 225 );
         
         aBall.setDirection( 170 );
         aBall.setCoordinates( -10, 10 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 190 );
         
     });
@@ -105,27 +105,27 @@ describe("Ball", function() {
         
         aBall.setDirection( 270 );
         aBall.setCoordinates( 1000, 10 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 90 );
         
         aBall.setDirection( 225 );
         aBall.setCoordinates( 1000, 10 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 135 );
         
         aBall.setDirection( 200 );
         aBall.setCoordinates( 1000, 10 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 160 );
         
         aBall.setDirection( 315 );
         aBall.setCoordinates( 1000, 10 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 45 );
         
         aBall.setDirection( 340 );
         aBall.setCoordinates( 1000, 10 );
-        aBall.colision( );
+        aBall._refreshDirection( );
         expect( aBall.direction ).toEqual( 20 );
         
     });
@@ -151,28 +151,28 @@ describe("Ball", function() {
         var ball = new Ball();
         ball.setDirection( 30 );
         ball.setSpeed( 10 );
-        ball.move( );
+        ball._move( );
     
         expect( ball.x ).toBeCloseTo( 5, 0.5 );      
         expect( ball.y ).toBeCloseTo( -9, -0.5 );
         
         ball.setDirection( 150 );
         ball.setCoordinates( 0, 0 );
-        ball.move();
+        ball._move();
         
         expect( ball.x ).toBeCloseTo( 5, 0.5 );      
         expect( ball.y ).toBeCloseTo( 9, -0.5 );
         
         ball.setDirection( 210 );
         ball.setCoordinates( 0, 0 );
-        ball.move();
+        ball._move();
         
         expect( ball.x ).toBeCloseTo( -5, -0.5 );      
         expect( ball.y ).toBeCloseTo( 9, -0.5 );
         
         ball.setDirection( 330 );
         ball.setCoordinates( 0, 0 );
-        ball.move();
+        ball._move();
         
         expect( ball.x ).toBeCloseTo( -5, -0.5 );      
         expect( ball.y ).toBeCloseTo( -9, -0.5 );
@@ -214,8 +214,8 @@ describe("Ball", function() {
     it("Check Width and Height", function( ) {
     
         var ball = new Ball( );
-        ball.setWidth( 10 );
-        ball.setHeight( 100 );
+        
+        ball.setSize( 10, 100 )
         
         expect( ball.getWidth( ) ).toEqual( 10 );
         expect( ball.getHeight( ) ).toEqual( 100 );
@@ -248,7 +248,7 @@ describe("Ball", function() {
         spyOn(window, "setInterval");
         var ball = new Ball( );
         
-        spyOn(ball, "cycle");
+        spyOn(ball, "_cycle");
         
         ball.play();
         var defaultCicleDuration = 30;
@@ -257,7 +257,7 @@ describe("Ball", function() {
         
         expect(window.setInterval).toHaveBeenCalled();
         
-        expect(ball.cycle).toHaveBeenCalled();
+        expect(ball._cycle).toHaveBeenCalled();
         expect( window.setInterval.mostRecentCall.args[1] ).toEqual( defaultCicleDuration );
         
     });

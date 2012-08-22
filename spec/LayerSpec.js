@@ -6,9 +6,9 @@ describe("Layer", function() {
 
     it("Create layer", function() {
         var layer = new Layer( );
-        layer.setWidth( 100 );
+        layer._setWidth( 100 );
         layer.calculeOffSreen( 50 );
-        expect( layer.getOffSreen( ) ).toEqual( 50 );
+        expect( layer._getOffSreen( ) ).toEqual( 50 );
     });
     
     it("Check Off Set Y", function() {
@@ -37,7 +37,7 @@ describe("Layer", function() {
     
     it("Check is move OK", function() {
         var layer = new Layer( );
-        layer.setWidth( 600 );
+        layer._setWidth( 600 );
         layer.calculeOffSreen( 400 );
         
         layer.compute( 0.5 );

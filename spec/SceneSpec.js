@@ -17,21 +17,20 @@ describe("Scene", function() {
         var defaultCanvasHeight = 150;
         var defaultCanvasWidth = 300;
         var scene = new Scene('nodimensions');
-        expect(scene.height()).toEqual(defaultCanvasHeight);
-        expect(scene.width()).toEqual(defaultCanvasWidth);
+        expect(scene._height()).toEqual(defaultCanvasHeight);
+        expect(scene._width()).toEqual(defaultCanvasWidth);
     });
 
     it("check cange size canvas", function() {
 
-        var canvasHeight = 350;
         var canvasWidth = 400;
+        var canvasHeight = 350;
         var scene = new Scene('nodimensions');
         
-        scene.setHeight( canvasHeight );
-        scene.setWidth( canvasWidth );
+        scene.setSize( canvasWidth, canvasHeight );
         
-        expect(scene.height()).toEqual(canvasHeight);
-        expect(scene.width()).toEqual(canvasWidth);
+        expect(scene._width()).toEqual(canvasWidth);
+        expect(scene._height()).toEqual(canvasHeight);
     });
     
     it("check adding layer", function() {
@@ -46,9 +45,9 @@ describe("Scene", function() {
         scene.addLayer(anotherLayer);
         scene.addLayer(aLayer);
 
-        expect(scene.layers()).toEqual(2);
-        expect(scene.getLayer(1)).toBe(anotherLayer);
-        expect(scene.getLayer(2)).toBe(aLayer);
+        expect(scene._layers()).toEqual(2);
+        expect(scene._getLayer(1)).toBe(anotherLayer);
+        expect(scene._getLayer(2)).toBe(aLayer);
     
     });
     
@@ -95,6 +94,7 @@ describe("Scene", function() {
         aBall.paint = function() {};
         aBall.setCanvasWidth = function() {};
         aBall.setCanvasHeight = function() {};
+        aBall.getX = function() {};
         
         var aLayer = {};
         aLayer.compute = function() {};
@@ -127,6 +127,7 @@ describe("Scene", function() {
         aBall.paint = function() {};
         aBall.setCanvasWidth = function() {};
         aBall.setCanvasHeight = function() {};
+        aBall.getX = function() {};
         
         var aLayer = {};
         aLayer.compute = function() {};
@@ -163,11 +164,11 @@ describe("Scene", function() {
         aBall.paint = function() {};
         aBall.setCanvasWidth = function() {};
         aBall.setCanvasHeight = function() {};
-        aBall.x = 10;
+        aBall.getX = function() { return 10 };
         
         scene.addBall( aBall );        
 
-        var calcule = aBall.x / scene.width( );
+        var calcule = aBall.getX( ) / scene._width( );
     
         expect( scene._calculeProportionX() ).toEqual( calcule );
         
@@ -192,9 +193,9 @@ describe("Scene", function() {
         scene.addObject(aObject);
         scene.addObject(anotherObject);
         
-        expect(scene.objects()).toEqual(2);
-        expect(scene.getObject(1)).toBe(aObject);
-        expect(scene.getObject(2)).toBe(anotherObject);
+        expect(scene._objects()).toEqual(2);
+        expect(scene._getObject(1)).toBe(aObject);
+        expect(scene._getObject(2)).toBe(anotherObject);
       
         expect(aObject.setCanvasWidth).toHaveBeenCalled();
         expect(aObject.setCanvasHeight).toHaveBeenCalled();
@@ -232,8 +233,8 @@ describe("Scene", function() {
     it("Values for default", function() {
         var scene = new Scene('dimensions');
         
-        expect(scene._cycleDuration).toEqual(30);
-        expect(scene._color).toEqual('black');
+        expect(scene.cycleDuration).toEqual(30);
+        expect(scene.color).toEqual('black');
         
     });
     
@@ -250,11 +251,182 @@ describe("Scene", function() {
         var scene = new Scene('dimensions');
         scene.addBall( aBall );
         
-        var index = scene.getIndexBall( );
+        var index = scene._getIndexBall( );
     
         expect(aBall.setCanvasWidth).toHaveBeenCalled();
         expect(aBall.setCanvasHeight).toHaveBeenCalled();
-        expect( scene.getObject( index ) ).toBe( aBall );
+        expect( scene._getObject( index ) ).toBe( aBall );
+        
+    });
+    
+    it("check adding Pad", function() {
+        
+        var aPad = {};
+        aPad.setCanvasWidth = function() {};
+        aPad.setCanvasHeight = function() {};
+        
+        spyOn(aPad, "setCanvasWidth");
+        spyOn(aPad, "setCanvasHeight");
+        
+        
+        var scene = new Scene('dimensions');
+        scene.addPad( aPad );
+        
+        var index = scene._getIndexPad( );
+    
+        expect(aPad.setCanvasWidth).toHaveBeenCalled();
+        expect(aPad.setCanvasHeight).toHaveBeenCalled();
+        expect( scene._getObject( index ) ).toBe( aPad );
+        
+    });
+    
+    it("Ball collision to pad not a throw", function() {
+        
+        var toFail = function() {
+            var scene = new Scene('dimensions');
+            scene._isBallColisionToPad( );
+        };
+    
+        expect( toFail ).not.toThrow( );
+        
+    });
+    
+    it("Check to Colision pad and Ball not colision", function() {
+        
+        var aBall = {};
+        aBall.setCanvasWidth = function() {};
+        aBall.setCanvasHeight = function() {};
+        aBall.getX = function() { return 10 };
+        aBall.getY = function() { return 10 };
+        aBall.getWidth = function() { return 10 };
+        aBall.getHeight = function() { return 10 };
+        
+        var aPad = {};
+        aPad.setCanvasWidth = function() {};
+        aPad.setCanvasHeight = function() {};
+        aPad.getX = function() { return 30 };
+        aPad.getY = function() { return 10 };
+        aPad.getWidth = function() { return 20 };
+        aPad.getHeight = function() { return 100 };
+        
+        var scene = new Scene('dimensions');
+        scene.addBall( aBall );
+        scene.addPad( aPad );
+        
+        expect( scene._isBallColisionToPad( ) ).toEqual( false );
+        
+        
+        aBall.getX = function() { return 25 };
+        aBall.getY = function() { return 10 };
+        aBall.getWidth = function() { return 10 };
+        aBall.getHeight = function() { return 10 };
+        
+        aPad.getX = function() { return 30 };
+        aPad.getY = function() { return 30 };
+        aPad.getWidth = function() { return 20 };
+        aPad.getHeight = function() { return 100 };
+        
+        
+        expect( scene._isBallColisionToPad( ) ).toEqual( false );
+        
+        
+        aBall.getX = function() { return 100 };
+        aBall.getY = function() { return 100 };
+        aBall.getWidth = function() { return 10 };
+        aBall.getHeight = function() { return 10 };
+        
+        aPad.getX = function() { return 30 };
+        aPad.getY = function() { return 30 };
+        aPad.getWidth = function() { return 20 };
+        aPad.getHeight = function() { return 100 };
+        
+        expect( scene._isBallColisionToPad( ) ).toEqual( false );
+        
+    });
+    
+    xit("Check change to direction ball in colision", function() {
+        
+        var aBall = {};
+        aBall.setCanvasWidth = function() {};
+        aBall.setCanvasHeight = function() {};
+        aBall.getX = function() { return 21 };
+        aBall.getY = function() { return 30 };
+        aBall.getWidth = function() { return 10 };
+        aBall.getHeight = function() { return 10 };
+        aBall.differenceLoopToDirection = function() {};
+        aBall.differenceLoopAndHalfToDirection = function() {};
+        
+        // LEFT
+        var aPad = {};
+        aPad.setCanvasWidth = function() {};
+        aPad.setCanvasHeight = function() {};
+        aPad.getX = function() { return 30 };
+        aPad.getY = function() { return 10 };
+        aPad.getWidth = function() { return 20 };
+        aPad.getHeight = function() { return 100 };
+        
+        spyOn(aBall, "differenceLoopToDirection");
+        spyOn(aBall, "differenceLoopAndHalfToDirection");
+        
+        var scene = new Scene('dimensions');
+        scene.addBall( aBall );
+        scene.addPad( aPad );
+        
+        expect( scene._isBallColisionToPad( ) ).toEqual( true );
+        expect(aBall.differenceLoopToDirection).toHaveBeenCalled( );
+        
+        // RIGTH
+        aBall.getX = function() { return 49 };
+        aBall.getY = function() { return 10 };
+        aBall.getWidth = function() { return 10 };
+        aBall.getHeight = function() { return 10 };
+        
+        aPad.getX = function() { return 30 };
+        aPad.getY = function() { return 10 };
+        aPad.getWidth = function() { return 20 };
+        aPad.getHeight = function() { return 100 };
+        
+        expect( scene._isBallColisionToPad( ) ).toEqual( true );
+        expect(aBall.differenceLoopToDirection).toHaveBeenCalled();
+        
+        // TOP
+        aBall.getX = function() { return 35 };
+        aBall.getY = function() { return 21 };
+        aBall.getWidth = function() { return 10 };
+        aBall.getHeight = function() { return 10 };
+        
+        aPad.getX = function() { return 30 };
+        aPad.getY = function() { return 30 };
+        aPad.getWidth = function() { return 20 };
+        aPad.getHeight = function() { return 100 };
+        
+        expect( scene._isBallColisionToPad( ) ).toEqual( true );
+        expect( aBall.differenceLoopAndHalfToDirection ).toHaveBeenCalled();
+        
+        // DOWN
+        aBall.getX = function() { return 35 };
+        aBall.getY = function() { return 129 };
+        aBall.getWidth = function() { return 10 };
+        aBall.getHeight = function() { return 10 };
+        
+        aPad.getX = function() { return 30 };
+        aPad.getY = function() { return 30 };
+        aPad.getWidth = function() { return 20 };
+        aPad.getHeight = function() { return 100 };
+        
+        expect( scene._isBallColisionToPad( ) ).toEqual( true );
+        expect( aBall.differenceLoopAndHalfToDirection ).toHaveBeenCalled();
+        
+    });
+    
+    it("Calcule _calculeProportionX", function() {
+        
+        var toFail = function() {
+            var scene = new Scene('dimensions');
+            scene._calculeProportionX( );
+        };
+    
+        expect( toFail ).not.toThrow( );
         
     });
     

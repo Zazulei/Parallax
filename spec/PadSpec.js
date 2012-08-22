@@ -21,9 +21,8 @@ describe("Pad", function() {
     it("Width and Height Get and Set is OK", function() {
         
         var pad = new Pad();
-        
-        pad.setWidth( 10 );
-        pad.setHeight( 20 );
+
+        pad.setSize( 10, 20 );
                         
         expect( pad.getWidth( ) ).toEqual( 10 );
         expect( pad.getHeight( ) ).toEqual( 20 );
@@ -62,7 +61,6 @@ describe("Pad", function() {
         canvas.dispatchEvent( evtKeyDown );
         
         expect( pad.lastKey ).toEqual( 115 );
-        expect( KEY.pressing[115] ).toBe( true );
         
         var keyUp = document.createEvent('UIEvents');
         keyUp.initUIEvent('keyup', true, true, window, 0);
@@ -70,16 +68,27 @@ describe("Pad", function() {
         
         canvas.dispatchEvent( keyUp );
         
-        expect( KEY.pressing[115] ).toBe( false );
+        expect( pad.lastKey ).not.toBeDefined();
         
     });
     
+    it("Check move prees key not avalid", function() {
+        
+        var toFail = function() {
+            var pad = new Pad();
+            pad.lastKey = 10;
+            pad._move();
+        };
+    
+        expect( toFail ).not.toThrow( );
+        
+    });
     
     it("Check move to pad", function() {
         
         var pad = new Pad();
         
-        pad.setY( 10 );
+        pad._setY( 10 );
         pad.setSpeed( 5 );
         
         var evtKeyDown = document.createEvent('UIEvents');
@@ -88,14 +97,14 @@ describe("Pad", function() {
         evtKeyDown.keyCode = KEY.up;
         canvas.dispatchEvent( evtKeyDown );
         
-        pad.move( );
+        pad._move( );
         
         expect( pad.y ).toEqual( 5 );
         
         evtKeyDown.keyCode = KEY.down;
         canvas.dispatchEvent( evtKeyDown );
         
-        pad.move( );
+        pad._move( );
         
         expect( pad.y ).toEqual( 10 );
         
@@ -105,7 +114,7 @@ describe("Pad", function() {
         
         canvas.dispatchEvent( keyUp );
    
-        pad.move( );
+        pad._move( );
         
         expect( pad.y ).toEqual( 10 ); 
     });
@@ -129,7 +138,7 @@ describe("Pad", function() {
         spyOn(window, "setInterval");
         var pad = new Pad( );
         
-        spyOn(pad, "cycle");
+        spyOn(pad, "_cycle");
         
         pad.play();
         var defaultCicleDuration = 30;
@@ -138,7 +147,7 @@ describe("Pad", function() {
         
         expect(window.setInterval).toHaveBeenCalled();
         
-        expect(pad.cycle).toHaveBeenCalled();
+        expect(pad._cycle).toHaveBeenCalled();
         expect( window.setInterval.mostRecentCall.args[1] ).toEqual( defaultCicleDuration );
 
     });
@@ -147,10 +156,11 @@ describe("Pad", function() {
     it("Limited in canvas", function() {
         
         var pad = new Pad( );
+        pad.setSize( 100, 100 );
         pad.setCanvasHeight( 300 );
 
-        expect( pad.limiterMin( -100 ) ).toEqual( 0 );
-        expect( pad.limiterMax( 1000 ) ).toEqual( 200 );
+        expect( pad._limiterMin( -100 ) ).toEqual( 0 );
+        expect( pad._limiterMax( 1000 ) ).toEqual( 200 );
         
     });
          

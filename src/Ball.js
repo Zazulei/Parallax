@@ -1,87 +1,38 @@
-function Ball( ) {    
-    this.x;
-    this.y;
-    this.speed;
-    this.color;
+function Ball( ) {
+    this.LOOP_DIRECTION = 360;
+    this.HALF_LOOP_DIRECTION = this.LOOP_DIRECTION / 2;
+    
+    this.x = undefined;
+    this.y = undefined;
+    this.speed = undefined;
+    this.color = undefined;
+    this.direction = undefined;
+    this.canvasHeight = undefined;
+    this.canvasWidth = undefined;
+    this.cycleDuration = undefined;
     
     this.img = new Image( );
-    
-    this.direction;
-    
-    this.canvasHeight;
-    this.canvasWidth;
 
-    this.randomDirection( );
+    this._randomDirection( );
+    this._setDefaultValues( );
+}
+
+Ball.prototype._setDefaultValues = function( ) {
     this.setSpeed( 5 );
     this.setCoordinates( 0, 0 );
     this.setColor( 'black' );
-    this.setHeight( 15 );
-    this.setWidth( 15 );
-    this.cycleDuration = 30;
+    this.setSize( 15, 15 );
+    this._setCycleDuration( 30 );
 }
 
-Ball.prototype.colision = function( ) {
-    
-    if( this.x < 0 ) {
-        this.x = 0;
-        this.setDirection( 360 - this.direction );
-    }
-    
-    if( this.y < 0 ) {
-        this.y = 0;
-        if( this.direction <= 180 )
-            this.setDirection( 180 - this.direction );
-        else
-            this.setDirection( 540 - this.direction );
-    }
-    
-    if( this.y + this.getHeight( ) > this.canvasHeight ) {
-        this.y = this.canvasHeight - this.getHeight( );
-        if( this.direction <= 180 )
-            this.setDirection( 180 - this.direction );
-        else
-            this.setDirection( 540 - this.direction );
-        
-    }
-    
-    if( this.x + this.getHeight( ) > this.canvasWidth ) {
-        this.x = this.canvasWidth - this.getHeight( );
-        this.setDirection( 360 - this.direction );
-    }
-}
-
-Ball.prototype.pasToRadians = function( value ) {
-    return value * Math.PI / 180;
+Ball.prototype.setSize = function( width, height ) {
+    this._setWidth( width );
+    this._setHeight( height );
 }
 
 Ball.prototype.play = function() {
     var self = this;
-    setInterval( function( ) { self.cycle( ) } , this.cycleDuration );
-}
-
-Ball.prototype.cycle = function() {
-    this.move( );
-    this.colision( );
-}
-
-Ball.prototype.move = function( ) {
-    var xIncrement = this.calculeX( );
-    var yIncrement = this.calculeY( );
-         
-    this.setX( this.x + xIncrement );
-    this.setY( this.y - yIncrement );
-}
-
-Ball.prototype.calculeX = function( ) {
-    return Math.sin( this.pasToRadians( this.direction ) ) * this.speed;
-}
-
-Ball.prototype.calculeY = function( ) { 
-    return Math.cos( this.pasToRadians( this.direction ) ) * this.speed;
-}
-
-Ball.prototype.randomDirection = function( ) {
-    this.setDirection( Math.round( Math.random() * 360 ) );
+    setInterval( function( ) { self._cycle( ) } , this.cycleDuration );
 }
 
 Ball.prototype.setCanvasWidth = function( value ) {
@@ -108,25 +59,17 @@ Ball.prototype.setPathImg = function( value ) {
     this.img.src = value;
 }
 
-Ball.prototype.setWidth = function( value ) {
-    this.img.width = value;
-}
-
-Ball.prototype.setHeight = function( value ) {
-    this.img.height = value;
-}
-
 Ball.prototype.setCoordinates = function( x, y ) {
-    this.setX( x );
-    this.setY( y );
+    this._setX( x );
+    this._setY( y );
 }
 
-Ball.prototype.setX = function( value ) {
-    this.x = value;
+Ball.prototype.getX = function( ) {
+    return this.x;
 }
 
-Ball.prototype.setY = function( value ) {
-    this.y = value;
+Ball.prototype.getY = function( ) {
+    return this.y;
 }
 
 Ball.prototype.getWidth = function( ) {
@@ -150,4 +93,82 @@ Ball.prototype.paint = function( ctx ) {
         ctx.fillStyle = this.color;
         ctx.fillRect( x, y, width, height );
     }
+}
+
+Ball.prototype._setX = function( value ) {
+    this.x = value;
+}
+
+Ball.prototype._setY = function( value ) {
+    this.y = value;
+}
+
+Ball.prototype._setCycleDuration = function( value ) {
+    this.cycleDuration = value;
+}
+
+Ball.prototype._setWidth = function( value ) {
+    this.img.width = value;
+}
+
+Ball.prototype._setHeight = function( value ) {
+    this.img.height = value;
+}
+
+Ball.prototype._cycle = function() {
+    this._move( );
+    this._refreshDirection( );
+}
+
+Ball.prototype._calculeX = function( ) {
+    return Math.sin( this._pasToRadians( this.direction ) ) * this.speed;
+}
+
+Ball.prototype._calculeY = function( ) { 
+    return Math.cos( this._pasToRadians( this.direction ) ) * this.speed;
+}
+
+Ball.prototype._randomDirection = function( ) {
+    this.setDirection( Math.round( Math.random() * this.LOOP_DIRECTION ) );
+}
+
+Ball.prototype._move = function( ) {
+    var xIncrement = this._calculeX( );
+    var yIncrement = this._calculeY( );
+         
+    this.setCoordinates( this.x + xIncrement, this.y - yIncrement );
+}
+
+Ball.prototype.differenceLoopToDirection = function( ) {
+    this.setDirection( this.LOOP_DIRECTION - this.direction );
+}
+
+Ball.prototype.differenceLoopAndHalfToDirection = function( ) {
+    this.setDirection( this.LOOP_DIRECTION + this.HALF_LOOP_DIRECTION - this.direction );
+}
+
+Ball.prototype._refreshDirection = function( ) {
+    if( this.x < 0 ) {
+        this.x = 0;
+        this.differenceLoopToDirection( );
+    }
+    
+    if( this.x + this.getHeight( ) > this.canvasWidth ) {
+        this.x = this.canvasWidth - this.getHeight( );
+        this.differenceLoopToDirection( );
+    }
+    
+    if( this.y < 0 ) {
+        this.y = 0;
+        this.differenceLoopAndHalfToDirection( );
+    }
+    
+    if( this.y + this.getHeight( ) > this.canvasHeight ) {
+        this.y = this.canvasHeight - this.getHeight( );
+        this.differenceLoopAndHalfToDirection( );
+    }
+}
+
+Ball.prototype._pasToRadians = function( value ) {
+    return value * Math.PI / this.HALF_LOOP_DIRECTION;
 }
